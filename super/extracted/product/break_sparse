@@ -1,0 +1,39 @@
+#!/usr/bin/env zsh
+
+zmodload zsh/system
+
+input_file="$1"
+
+[ -z "$input_file" ] && {
+  print "Error: require input file"
+  return 1
+}
+
+! [ -f "$input_file" ] && {
+  print "Error: file "$input_file" not exist"
+  return 1
+}
+
+[ -d "parts" ] && {
+  rm -rf parts
+}
+mkdir parts
+
+chunk_size=31457280 #set to 30MB
+
+part_count=0
+
+local chunk
+
+exec {fd}< "$input_file"
+
+{
+  while sysread -i $fd -s $chunk_size chunk; do
+    ((part_count++))
+    print -rn -- "$chunk" > parts/"$part_count".part
+  done
+} always {
+  exec {fd}<&-
+}
+
+print "Broke file "$input_file" into "$part_count" parts"

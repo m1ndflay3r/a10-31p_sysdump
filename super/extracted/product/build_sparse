@@ -1,0 +1,34 @@
+#!/usr/bin/env zsh
+
+! [ -d "parts" ] && {
+  print "Error: \'parts\' directory not found"
+  print "Did you run \'break_sparse\'?"
+  return 1
+}
+
+output_file="$1"
+[ -z "$output_file" ] && {
+  output_file="product.img"
+}
+
+! [ -f "parts/1.part" ] && {
+  print "Error: first part not found"
+  print "Did you run \'break_sparse\'?"
+  return 1
+}
+
+part_count=1
+
+< parts/1.part > "$output_file"
+
+while true; do
+  ((part_count++))
+  [ -f "parts/"$part_count".part" ] && {
+    < parts/"$part_count".part >> "$output_file"
+  } || {
+    break
+  }
+done
+((part_count--))
+
+print "Converted "$part_count" parts to "$output_file""
