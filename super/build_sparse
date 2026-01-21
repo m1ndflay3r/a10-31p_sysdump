@@ -19,12 +19,12 @@ output_file="$1"
 
 part_count=1
 
-print -rn -- "$(<parts/1.part)" > "$output_file"
+< parts/1.part > "$output_file"
 
 while true; do
   ((part_count++))
   [ -f "parts/"$part_count".part" ] && {
-    print -rn -- "$(<parts/"$part_count".part)" >> "$output_file"
+    < parts/"$part_count".part >> "$output_file"
   } || {
     break
   }
