@@ -8,7 +8,7 @@
 
 output_file="$1"
 [ -z "$output_file" ] && {
-  output_file="sparse.img"
+  output_file="super.img"
 }
 
 ! [ -f "parts/1.part" ] && {
